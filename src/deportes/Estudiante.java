@@ -1,78 +1,43 @@
-public class Estudiante implements Comparable<Estudiante>{
-    final String nombre;
+package deportes;
+
+import estructuras.DLL;
+
+// Estudiante registrado en el sistema. Los deportes que practica y los que le interesan se guardan en
+// listas doblemente enlazadas porque cambian con cada registro o eliminación y no tienen tamaño fijo
+public class Estudiante {
     private final int id;
-    private int edad;
-    private int numeroTelefono;
-    private final String correo;
-    private String facultad;
-    private String carrera;
-    private DLL<Deporte> deportesInscritos;
-    private Queue<Deporte> solicitudesPendientes;
+    private final String nombre;
+    private final DLL<Deporte> practica;
+    private final DLL<Deporte> intereses;
 
-    public Estudiante(String nombre, int id, int edad, int numeroTelefono, String correo, String facultad, String carrera){
-        this.nombre = nombre;
+    public Estudiante(int id, String nombre) {
+        if (nombre == null || nombre.isBlank()) {
+            throw new IllegalArgumentException("El nombre no puede estar vacío");
+        }
         this.id = id;
-        this.edad = edad;
-        this.numeroTelefono = numeroTelefono;
-        this.correo = correo;
-        this.facultad = facultad;
-        this.carrera = carrera;
-        this.deportesInscritos = new DLL<Deporte>();
-        this.solicitudesPendientes = new Queue<Deporte>(5);
+        this.nombre = nombre.trim();
+        this.practica = new DLL<>();
+        this.intereses = new DLL<>();
+    }
 
-    }
-    public String getNombre() {
-        return nombre;
-    }
-    public int getId() {
+    public int getId() { // O(1)
         return id;
     }
-    public int getEdad() {
-        return edad;
+
+    public String getNombre() { // O(1)
+        return nombre;
     }
-    public int getNumeroTelefono() {
-        return numeroTelefono;
+
+    public DLL<Deporte> getPractica() { // O(1)
+        return practica;
     }
-    public String getCorreo() {
-        return correo;
-    }
-    public String getFacultad() {
-        return facultad;
-    }
-    public String getCarrera() {
-        return carrera;
-    }
-    public DLL<Deporte> getDeportesInscritos() {
-        return deportesInscritos;
-    }
-    public Queue<Deporte> getSolicitudesPendientes() {
-        return solicitudesPendientes;
+
+    public DLL<Deporte> getIntereses() { // O(1)
+        return intereses;
     }
 
     @Override
-    public boolean equals(Object obj){
-        if (this == obj) {
-        return true;
-        }
-        
-        if (obj == null || getClass() != obj.getClass()) {
-            return false;
-        }
-        
-        Estudiante otro = (Estudiante) obj;
-        
-        return this.id == otro.id;
+    public String toString() { // O(1)
+        return nombre + " (ID " + id + ")";
     }
-
-    @Override
-    public int hashCode() {
-        return Integer.hashCode(this.id);
-    }
-
-    @Override 
-    public int compareTo(Estudiante estudiante2){
-        return  Integer.compare(this.edad, estudiante2.getEdad());
-        
-    }
-    
 }
