@@ -1,3 +1,7 @@
+package estructuras;
+
+// Lista doblemente enlazada con head, tail y contador. Como cada nodo conoce a su anterior,
+// teniendo la referencia a un nodo se puede borrar o insertar junto a él en O(1)
 public class DLL<T> {
     private DLLNode<T> head;
     private DLLNode<T> tail;
@@ -9,9 +13,9 @@ public class DLL<T> {
         this.count = 0;
     }
 
-    public void pushBack(T data) {
+    // retorna el nodo creado, para que quien lo agrega pueda borrarlo después en O(1)
+    public DLLNode<T> pushBack(T data) { // O(1)
         DLLNode<T> n = new DLLNode<>(data);
-
         if (isEmpty()) {
             head = n;
             tail = n;
@@ -20,11 +24,11 @@ public class DLL<T> {
             n.prev = tail;
             tail = n;
         }
-
         count++;
+        return n;
     }
 
-    public void pushFront(T data) {
+    public DLLNode<T> pushFront(T data) { // O(1)
         DLLNode<T> n = new DLLNode<>(data);
         if (isEmpty()) {
             head = n;
@@ -35,18 +39,14 @@ public class DLL<T> {
             head = n;
         }
         count++;
+        return n;
     }
 
-    public void addNodeAfter(DLLNode<T> node, T key) {
-        if (node == null) {
-            System.out.println("Invalid node.");
-            return;
-        }
-
+    public DLLNode<T> addNodeAfter(DLLNode<T> node, T key) { // O(1)
+        revisarNodo(node);
         DLLNode<T> n = new DLLNode<>(key);
         n.next = node.next;
         n.prev = node;
-
         if (node.next != null) {
             node.next.prev = n;
         } else {
@@ -54,205 +54,146 @@ public class DLL<T> {
         }
         node.next = n;
         count++;
+        return n;
     }
 
-    public void addNodeBefore(DLLNode<T> node, T key) {
-        if (node == null) {
-            System.out.println("Invalid node.");
-            return;
-        }
-
+    public DLLNode<T> addNodeBefore(DLLNode<T> node, T key) { // O(1)
+        revisarNodo(node);
         DLLNode<T> n = new DLLNode<>(key);
         n.prev = node.prev;
         n.next = node;
-
         if (node.prev != null) {
             node.prev.next = n;
         } else {
             head = n;
         }
-
         node.prev = n;
         count++;
+        return n;
     }
 
-    public void popBack() {
-        if (isEmpty()) {
-            System.out.println("The list is empty. Nothing to delete.");
-            return;
-        } else if (head == tail) {
-            head = null;
-            tail = null;
-            count = 0;
-            return;
-        }
-        tail = tail.prev;
-        tail.next = null;
-        count--;
+    public T popBack() { // O(1): tail.prev es el nuevo último
+        revisarNoVacia();
+        T data = tail.data;
+        deleteNode(tail);
+        return data;
     }
 
-    public void popFront() {
-        if (isEmpty()) {
-            System.out.println("The list is empty. Nothing to delete.");
-            return;
-        } else if (head == tail) {
-            head = null;
-            tail = null;
-            count = 0;
-            return;
-        }
-        head = head.next;
-        head.prev = null;
-        count--;
+    public T popFront() { // O(1)
+        revisarNoVacia();
+        T data = head.data;
+        deleteNode(head);
+        return data;
     }
 
-    public void deleteNodeAfter(DLLNode<T> node) {
-        if (isEmpty()) {
-            System.out.println("The list is empty, nothing to delete.");
-            return;
+    public T topFront() { // O(1)
+        revisarNoVacia();
+        return head.data;
+    }
+
+    public T topBack() { // O(1)
+        revisarNoVacia();
+        return tail.data;
+    }
+
+    public void deleteNodeAfter(DLLNode<T> node) { // O(1)
+        revisarNodo(node);
+        if (node.next == null) {
+            throw new IllegalArgumentException("No hay un nodo después de este");
         }
+        deleteNode(node.next);
+    }
 
-        if (node == null || node.next == null) {
-            System.out.println("There is no node after this node.");
-            return;
+    public void deleteNodeBefore(DLLNode<T> node) { // O(1)
+        revisarNodo(node);
+        if (node.prev == null) {
+            throw new IllegalArgumentException("No hay un nodo antes de este");
         }
+        deleteNode(node.prev);
+    }
 
-        DLLNode<T> nodeToDelete = node.next;
-
-        if (nodeToDelete.next != null) {
-            node.next = nodeToDelete.next;
-            nodeToDelete.next.prev = node;
+    // el nodo debe pertenecer a esta lista; no se revisa porque eso costaría O(n)
+    public void deleteNode(DLLNode<T> node) { // O(1)
+        revisarNodo(node);
+        if (node.prev == null) {
+            head = node.next;
         } else {
-            node.next = null;
-            tail = node;
+            node.prev.next = node.next;
         }
-        count--;
-    }
-
-    public void deleteNodeBefore(DLLNode<T> node) {
-        if (isEmpty()) {
-            System.out.println("The list is empty, nothing to delete.");
-            return;
-        }
-        if (node == null || node.prev == null) {
-            System.out.println("There is no node before this node.");
-            return;
-        }
-
-        DLLNode<T> nodeToDelete = node.prev;
-
-        if (nodeToDelete.prev != null) {
-            node.prev = nodeToDelete.prev;
-            nodeToDelete.prev.next = node;
+        if (node.next == null) {
+            tail = node.prev;
         } else {
-            node.prev = null;
-            head = node;
+            node.next.prev = node.prev;
         }
+        node.next = null;
+        node.prev = null;
         count--;
     }
 
-    public boolean isEmpty() {
-        return head == null;
-    }
-
-    public DLLNode<T> find(T item) {
+    // retorna el primer nodo cuyo dato es igual a item (con equals), o null si no está
+    public DLLNode<T> find(T item) { // O(n)
         DLLNode<T> temp = head;
-
-        if (!isEmpty()) {
-            while (temp != null) {
-                if (temp.data != null && temp.data.equals(item)) {
-                    return temp;
-                }
-                temp = temp.next;
+        while (temp != null) {
+            if (temp.data != null && temp.data.equals(item)) {
+                return temp;
             }
+            temp = temp.next;
         }
-        System.out.println("The element was not found.");
         return null;
     }
 
-    public void erase(int n) {
-        if (isEmpty()) {
-            System.out.println("The list is empty. Nothing to delete.");
-            return;
+    // borra el elemento de la posición n (la primera es 1)
+    public T erase(int n) { // O(n): toca llegar a la posición
+        if (n < 1 || n > count) {
+            throw new IllegalArgumentException("Posición fuera de la lista: " + n);
         }
-        if (n <= 0) {
-            System.out.println("Invalid position.");
-            return;
-        }
-        if (n == 1) {
-            popFront();
-            return;
-        }
-
-        int counter = 1;
         DLLNode<T> pointer = head;
-
-        while (counter < (n - 1) && pointer != null && pointer.next != null) {
+        for (int i = 1; i < n; i++) {
             pointer = pointer.next;
-            counter++;
         }
-        if (pointer == null || pointer.next == null) {
-            System.out.println("Position out of bounds.");
-            return;
-        }
-
-        DLLNode<T> temp = pointer.next;
-
-        pointer.next = temp.next;
-
-        if (temp.next != null) {
-            temp.next.prev = pointer;
-        } else {
-            tail = pointer;
-        }
-
-        temp.next = null;
-        temp.prev = null;
-        count--;
+        deleteNode(pointer);
+        return pointer.data;
     }
 
-    public DLLNode<T> getHead() {
-        return head;
+    public boolean isEmpty() { // O(1)
+        return head == null;
     }
 
-    public DLLNode<T> getTail() {
-        return tail;
-    }
-
-    public int size() {
+    public int size() { // O(1): se lleva un contador
         return count;
     }
 
-    public void deleteNode(DLLNode<T> node){
-        if (isEmpty() || node == null) {
-            System.out.println("No se puede eliminar: nodo inválido o lista vacía.");
-            return;
+    public DLLNode<T> getHead() { // O(1)
+        return head;
+    }
+
+    public DLLNode<T> getTail() { // O(1)
+        return tail;
+    }
+
+    @Override
+    public String toString() { // O(n)
+        StringBuilder texto = new StringBuilder("[");
+        DLLNode<T> temp = head;
+        while (temp != null) {
+            texto.append(temp.data);
+            if (temp.next != null) {
+                texto.append(", ");
+            }
+            temp = temp.next;
         }
+        return texto.append("]").toString();
+    }
 
-        if (head == tail && node == head) {
-            head = null;
-            tail = null;
-            count = 0;
-            return;
+    private void revisarNoVacia() {
+        if (isEmpty()) {
+            throw new IllegalStateException("La lista está vacía");
         }
+    }
 
-        if (node == head) {
-            popFront();
-            return;
+    private void revisarNodo(DLLNode<T> node) {
+        if (node == null) {
+            throw new IllegalArgumentException("El nodo no puede ser null");
         }
-
-        if (node == tail) {
-            popBack();
-            return;
-        }
-
-        node.prev.next = node.next;
-        node.next.prev = node.prev;
-
-        node.next = null;
-        node.prev = null;
-
-        count--;
-
     }
 }
