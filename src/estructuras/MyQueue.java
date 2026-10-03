@@ -1,8 +1,17 @@
-public interface MyQueue<T>{
-    void enqueue (T x);
+package estructuras;
+
+public interface MyQueue<T> {
+
+    void enqueue(T x);
+
     T dequeue();
+
     T front();
+
     boolean isEmpty();
+
     int size();
-    void delete (T n);
+
+    // elimina el primer valor n que encuentra empezando por el frente
+    boolean delete(T n);
 }
