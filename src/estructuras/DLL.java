@@ -127,6 +127,7 @@ public class DLL<T> {
         }
         node.next = null;
         node.prev = null;
+        node.lista = null;
         count--;
     }
 
@@ -185,6 +186,12 @@ public class DLL<T> {
         return texto.append("]").toString();
     }
 
+    private DLLNode<T> crearNodo(T data) {
+        DLLNode<T> n = new DLLNode<>(data);
+        n.lista = this;
+        return n;
+    }
+
     private void revisarNoVacia() {
         if (isEmpty()) {
             throw new IllegalStateException("La lista está vacía");
@@ -194,6 +201,9 @@ public class DLL<T> {
     private void revisarNodo(DLLNode<T> node) {
         if (node == null) {
             throw new IllegalArgumentException("El nodo no puede ser null");
+        }
+        if (node.lista != this) {
+            throw new IllegalArgumentException("El nodo no pertenece a esta lista (ya fue borrado o es de otra)");
         }
     }
 }
