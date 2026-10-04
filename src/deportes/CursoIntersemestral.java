@@ -1,11 +1,13 @@
+package deportes;
+
 public class CursoIntersemestral extends Deporte {
     private final int periodo;
-    private int duracion;
+    private int duracionSemanas;
 
     public CursoIntersemestral(int id, String nombre, String horario, int cupos, String tipo_curso, String entrenador, int periodo, int duracionSemanas){
         super(id, nombre, horario, cupos, "Intersemestral", entrenador);
         this.periodo = periodo;
-        this.duracion = duracionSemanas;
+        this.duracionSemanas = duracionSemanas;
     }
 
     public int getPeriodo() {
