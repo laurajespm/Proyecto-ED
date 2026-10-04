@@ -15,7 +15,7 @@ public class DLL<T> {
 
     // retorna el nodo creado, para que quien lo agrega pueda borrarlo después en O(1)
     public DLLNode<T> pushBack(T data) { // O(1)
-        DLLNode<T> n = new DLLNode<>(data);
+        DLLNode<T> n = crearNodo(data);
         if (isEmpty()) {
             head = n;
             tail = n;
@@ -29,7 +29,7 @@ public class DLL<T> {
     }
 
     public DLLNode<T> pushFront(T data) { // O(1)
-        DLLNode<T> n = new DLLNode<>(data);
+        DLLNode<T> n = crearNodo(data);
         if (isEmpty()) {
             head = n;
             tail = n;
@@ -44,7 +44,7 @@ public class DLL<T> {
 
     public DLLNode<T> addNodeAfter(DLLNode<T> node, T key) { // O(1)
         revisarNodo(node);
-        DLLNode<T> n = new DLLNode<>(key);
+        DLLNode<T> n = crearNodo(key);
         n.next = node.next;
         n.prev = node;
         if (node.next != null) {
@@ -59,7 +59,7 @@ public class DLL<T> {
 
     public DLLNode<T> addNodeBefore(DLLNode<T> node, T key) { // O(1)
         revisarNodo(node);
-        DLLNode<T> n = new DLLNode<>(key);
+        DLLNode<T> n = crearNodo(key);
         n.prev = node.prev;
         n.next = node;
         if (node.prev != null) {
@@ -112,7 +112,7 @@ public class DLL<T> {
         deleteNode(node.prev);
     }
 
-    // el nodo debe pertenecer a esta lista; no se revisa porque eso costaría O(n)
+    // el nodo debe pertenecer a esta lista: cada nodo recuerda su lista, así que revisarlo es O(1)
     public void deleteNode(DLLNode<T> node) { // O(1)
         revisarNodo(node);
         if (node.prev == null) {
