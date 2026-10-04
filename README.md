@@ -27,7 +27,7 @@ Este sistema agrupa a los estudiantes en **comunidades** según los deportes que
 - **Nombre.**
 - **Deportes que practica.**
 - **Deportes que le interesan.**
-
+La clase `Estudiante` guarda además edad, teléfono, correo, facultad y carrera, y lleva una cola de solicitudes pendientes a deportes.
 Dos estudiantes están conectados **directamente** si practican un mismo deporte, e **indirectamente** si hay una cadena de estudiantes que los une compartiendo deportes.
 
 ## Producto mínimo viable (MVP)
@@ -55,6 +55,7 @@ Programa de consola. Los estudiantes se registran desde el menú o se cargan des
 ## Diseño del sistema
 
 La clase `SistemaDeportes` atiende los requisitos con tres árboles AVL y con las listas que unen estudiantes y deportes. Esas listas forman un **grafo bipartito implícito**, explicado con más detalle en el informe. Una cola permite recorrer ese grafo por anchura para obtener las comunidades y las conexiones.
+Los deportes se clasifican en tres tipos mediante subclases de `Deporte` (intersemestral, representativo y recreativo). Esa clasificación y los datos propios de cada tipo, como cupos y horarios, están en el código como base para entregas posteriores; los requisitos RF1 a RF7 no los usan.
 
 ### Estructuras de datos elegidas
 
@@ -68,10 +69,12 @@ En los costos, *n* es la cantidad de estudiantes, *d* la de deportes y *m* la de
 | **Cola** | Recorrido por anchura del grafo bipartito | RF4, RF5, RF6 | O(V + E), con V = n + d y E = m |
 | **AVL del ranking** (clave: número de practicantes, nombre) | Listar deportes de más a menos practicantes con un recorrido inorden | RF7 | Listar: O(d); actualizar un deporte: O(log d) |
 
+La **cola** también se usa dentro de las clases: cada `Deporte` tiene una cola de solicitudes y otra de espera de inscripción, y cada `Estudiante` una de solicitudes pendientes. Es un arreglo circular que duplica su tamaño al llenarse, así que el número con que se crea es el tamaño inicial y no un límite.
+
 **Justificación resumida**
 
 - **AVL:** busca, inserta y elimina en O(log n) en el peor caso. Una lista costaría O(n) por búsqueda; un arreglo ordenado inserta y elimina en O(n); un árbol binario de búsqueda sin balancear se degenera en lista si los ID llegan en orden. Una tabla hash daría O(1) en promedio, pero es un tema posterior del curso y se evaluará en la Entrega 3.
-- **DLL:** cada estudiante guarda el nodo que ocupa en la DLL de cada deporte que practica, por lo que al eliminarlo se quita en O(1). Además hacen de listas de adyacencia, así que no hace falta un grafo aparte: unir a los estudiantes entre sí exigiría k(k−1)/2 aristas por deporte con k practicantes, en lugar de k.
+- **DLL:** cada estudiante guarda el nodo que ocupa en la DLL de cada deporte que practica, por lo que al eliminarlo se quita en O(1). Además hacen de listas de adyacencia, así que no hace falta un grafo aparte: unir a los estudiantes entre sí exigiría k(k−1)/2 aristas por deporte con k practicantes, en lugar de k.  Cada nodo recuerda a qué lista pertenece, de modo que borrar un nodo que ya fue borrado o que es de otra lista lanza una excepción en lugar de dañar la lista, y esa comprobación sigue siendo O(1).
 - **Cola:** el recorrido por anchura visita a los estudiantes por niveles, así que el primero encontrado que practica un deporte de interés es el de menos intermediarios. Si la cola se vacía sin encontrarlo, la conexión no existe. Una pila daría un recorrido en profundidad y no aseguraría el camino más corto.
 - **AVL del ranking:** al cambiar la cantidad de practicantes, el deporte se saca y se vuelve a insertar en O(log d). Un heap daría el deporte con más practicantes en O(1), pero listarlos todos en orden costaría O(d log d) en cada consulta.
 
@@ -100,10 +103,14 @@ Proyecto-ED/
     │   ├── Queue.java            cola con arreglo circular
     │   └── ArbolAVL.java         árbol AVL de clave y valor (plantilla)
     └── deportes/
-        ├── Estudiante.java       ID, nombre, deportes que practica y de interés
-        ├── Deporte.java          nombre y lista de practicantes
-        ├── ClaveRanking.java     orden de los deportes por número de practicantes
-        └── SistemaDeportes.java  un método por requisito funcional (plantilla)
+        ├── Estudiante.java             ID, nombre, datos de contacto, deportes que practica y de interés
+        ├── Deporte.java                nombre, tipo, horario, cupos, entrenador, lista de practicantes y colas
+        ├── CursoIntersemestral.java    deporte de tipo intersemestral (periodo y duración en semanas)
+        ├── DeporteRepresentativo.java  deporte de tipo representativo (nivel requerido, convocatoria, capitán, titulares)
+        ├── Recreativo.java             deporte de tipo recreativo (asistencia mínima, cancelación voluntaria)
+        ├── Solicitud.java              clase vacía, sin uso todavía
+        ├── ClaveRanking.java           orden de los deportes por número de practicantes
+        └── SistemaDeportes.java        un método por requisito funcional (plantilla)
 ```
 
 ## Requisitos, compilación y ejecución
