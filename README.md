@@ -54,7 +54,7 @@ Programa de consola. Los estudiantes se registran desde el menú o se cargan des
 
 ## Diseño del sistema
 
-La clase `SistemaDeportes` atiende los requisitos con tres árboles AVL y con las listas que unen estudiantes y deportes. Esas listas forman un **grafo bipartito implícito** Explicado con profundiad en el informe. Una cola permite recorrer ese grafo por anchura para obtener las comunidades y las conexiones.
+La clase `SistemaDeportes` atiende los requisitos con tres árboles AVL y con las listas que unen estudiantes y deportes. Esas listas forman un **grafo bipartito implícito**, explicado con más detalle en el informe. Una cola permite recorrer ese grafo por anchura para obtener las comunidades y las conexiones.
 
 ### Estructuras de datos elegidas
 
@@ -88,39 +88,49 @@ En los costos, *n* es la cantidad de estudiantes, *d* la de deportes y *m* la de
 
 
 ## Estructura del repositorio
+
 ```text
-Proyecto-ED/   
-├──CursoIntersemestral.java
-├──DLL.java
-├──DLLNode.java
-├──Deporte.java
-├── DeporteRepresentativo   
-├── Estudiante.java
-├── GestorDeportes.java
-├── MyQueue.java
-├── Queue.java
-├── Recreativo.java
-├── solicitud.java
-└── README.md
+Proyecto-ED/
+├── README.md
+└── src/
+    ├── estructuras/
+    │   ├── DLL.java              lista doblemente enlazada
+    │   ├── DLLNode.java          nodo de la lista
+    │   ├── MyQueue.java          interfaz de cola
+    │   ├── Queue.java            cola con arreglo circular
+    │   └── ArbolAVL.java         árbol AVL de clave y valor (plantilla)
+    └── deportes/
+        ├── Estudiante.java       ID, nombre, deportes que practica y de interés
+        ├── Deporte.java          nombre y lista de practicantes
+        ├── ClaveRanking.java     orden de los deportes por número de practicantes
+        └── SistemaDeportes.java  un método por requisito funcional (plantilla)
 ```
 
 ## Requisitos, compilación y ejecución
 
-Fase final de compilaciòn aùn en proceso:
+Java 17 o superior; no se usa Maven ni Gradle, basta con el JDK.
 
 ```bash
 git clone https://github.com/laurajespm/Proyecto-ED.git
 cd Proyecto-ED
-
+javac -encoding UTF-8 -d out $(find src -name "*.java")
 ```
 
-## Estado del proyecto
-A partir del desarrollo actualmente utilizado, se completò la **Entrega 1**
+En Windows, con PowerShell, el último comando es:
 
-- **Entrega 1:** reporte con comprensión del problema, MVP, estructuras elegidas y flujo general.
+```powershell
+javac -encoding UTF-8 -d out (Get-ChildItem -Recurse src -Filter *.java).FullName
+```
+
+En la Entrega 1 todavía no hay programa principal que ejecutar: la lista doblemente enlazada y la cola ya funcionan, y el árbol AVL y `SistemaDeportes` son plantillas con un método por requisito funcional y un comentario de la estructura que usará cada uno. La lógica se implementa en la Entrega 2.
+
+## Estado del proyecto
+Se completó la **Entrega 1**.
+
+- **Entrega 1:** reporte con comprensión del problema, MVP, estructuras elegidas y flujo general, más las estructuras base y las plantillas del código.
 
 ## Referencias
 
-1. N. Rhodes, "Basic Data Structures" Department of Computer Science and Engineering, University of California, San Diego.
-4. M. A. Weiss, *Data Structures and Algorithm Analysis in Java*, 3.ª ed. Boston, MA, EE. UU.: Pearson, 2012.
-5. T. H. Cormen, C. E. Leiserson, R. L. Rivest y C. Stein, *Introduction to Algorithms*, 4.ª ed. Cambridge, MA, EE. UU.: MIT Press, 2022.
+1. N. Rhodes, "Basic Data Structures," Department of Computer Science and Engineering, University of California, San Diego.
+2. M. A. Weiss, *Data Structures and Algorithm Analysis in Java*, 3.ª ed. Boston, MA, EE. UU.: Pearson, 2012.
+3. T. H. Cormen, C. E. Leiserson, R. L. Rivest y C. Stein, *Introduction to Algorithms*, 4.ª ed. Cambridge, MA, EE. UU.: MIT Press, 2022.
