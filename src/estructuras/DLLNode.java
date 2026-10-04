@@ -5,11 +5,13 @@ public class DLLNode<T> {
     T data;
     DLLNode<T> prev;
     DLLNode<T> next;
+    DLL<T> lista;
 
     public DLLNode(T data) {
         this.data = data;
         this.next = null;
         this.prev = null;
+        this.lista = null;
     }
 
     public T getData() { // O(1)
@@ -21,6 +23,10 @@ public class DLLNode<T> {
     }
 
     public DLLNode<T> getPrev() { // O(1)
+        return prev;
+    }
+
+    public DLLNode<T> getPrev(){
         return prev;
     }
 }
