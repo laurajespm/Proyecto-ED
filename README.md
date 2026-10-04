@@ -27,7 +27,9 @@ Este sistema agrupa a los estudiantes en **comunidades** según los deportes que
 - **Nombre.**
 - **Deportes que practica.**
 - **Deportes que le interesan.**
+  
 La clase `Estudiante` guarda además edad, teléfono, correo, facultad y carrera, y lleva una cola de solicitudes pendientes a deportes.
+
 Dos estudiantes están conectados **directamente** si practican un mismo deporte, e **indirectamente** si hay una cadena de estudiantes que los une compartiendo deportes.
 
 ## Producto mínimo viable (MVP)
@@ -55,7 +57,8 @@ Programa de consola. Los estudiantes se registran desde el menú o se cargan des
 ## Diseño del sistema
 
 La clase `SistemaDeportes` atiende los requisitos con tres árboles AVL y con las listas que unen estudiantes y deportes. Esas listas forman un **grafo bipartito implícito**, explicado con más detalle en el informe. Una cola permite recorrer ese grafo por anchura para obtener las comunidades y las conexiones.
-Los deportes se clasifican en tres tipos mediante subclases de `Deporte` (intersemestral, representativo y recreativo). Esa clasificación y los datos propios de cada tipo, como cupos y horarios, están en el código como base para entregas posteriores; los requisitos RF1 a RF7 no los usan.
+
+Los deportes se clasifican en tres tipos mediante subclases de `Deporte` (intersemestral, representativo y recreativo). Los datos del curso (cupos, horario, entrenador) y los propios de cada tipo están en el código como base para entregas posteriores; los requisitos RF1 a RF7 no los usan.
 
 ### Estructuras de datos elegidas
 
