@@ -1,0 +1,9 @@
+# Compilación
+*.class
+out/
+
+# Sistema operativo y editores
+.DS_Store
+.idea/
+.vscode/
+*.iml
