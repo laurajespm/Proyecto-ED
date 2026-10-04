@@ -53,13 +53,17 @@ public class Deporte{
     }
 
     public int getCuposDisponibles() {
-        return cuposDisponibles;
+        return cuposMaximos - listaInscritos.size();
     }
 
     public void setCuposDisponibles(int cuposDisponibles) {
         this.cuposDisponibles = cuposDisponibles;
     }
 
+    public int getCantidadPracticantes(){
+        return listaInscritos.size();
+    }
+    
     public String getTipoCurso() {
         return tipoCurso;
     }
