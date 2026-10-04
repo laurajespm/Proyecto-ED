@@ -27,7 +27,7 @@ public class Deporte{
         this.tipoCurso = tipo_curso;
         this.entrenador = entrenador;
 
-        this.colaSolicitudes = new Queue<Estudiante>(cuposMaximos);
+        this.colaSolicitudes = new Queue<Estudiante>(Math.max(1, cuposMaximos));
         this.listaInscritos = new DLL <Estudiante>();
         this.colaEsperaInscripcion = new Queue<Estudiante>(10);
     }
