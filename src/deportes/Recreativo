@@ -1,3 +1,5 @@
+package deportes;
+
 public class Recreativo extends Deporte{
     private final double porcentajeAsistenciaMinima;
     private final boolean permiteCancelacionVoluntaria;
@@ -10,5 +12,9 @@ public class Recreativo extends Deporte{
 
     public double getPorcentajeAsistenciaMinima() {
         return porcentajeAsistenciaMinima;
+    }
+
+    public boolean permiteCancelacionVoluntaria() {
+        return permiteCancelacionVoluntaria;
     }
 }
