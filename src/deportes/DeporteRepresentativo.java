@@ -1,3 +1,7 @@
+package deportes;
+
+import estructuras.DLL;
+
 public class DeporteRepresentativo extends Deporte{
     private final String requisitosNivel;
     private boolean estadoConvocatoria;
@@ -9,15 +13,27 @@ public class DeporteRepresentativo extends Deporte{
         this.requisitosNivel = requisitosNivel;
         this.estadoConvocatoria = estadoConvocatoria;
         this.capitanPrincipal = capitanPrincipal;
-        this.titulares = titulares;
+        this.titulares = new DLL<Estudiante>();
     }
 
     public String getRequisitosNivel() {
         return requisitosNivel;
     }
 
-    public Estudiante capitanPrincipal() {
+    public boolean isConvocatoriaAbierta() {
+        return estadoConvocatoria;
+    }
+
+    public void setEstadoConvocatoria(boolean estadoConvocatoria) {
+        this.estadoConvocatoria = estadoConvocatoria;
+    }
+
+    public Estudiante getCapitanPrincipal() {
         return capitanPrincipal;
+    }
+
+    public void setCapitanPrincipal(Estudiante capitanPrincipal) {
+        this.capitanPrincipal = capitanPrincipal;
     }
 
     public DLL<Estudiante> getTitulares() {
