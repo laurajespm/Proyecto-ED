@@ -15,6 +15,6 @@ public class CursoIntersemestral extends Deporte {
     }
 
     public int getDuracion() {
-        return duracion;
+        return duracionSemanas;
     }
 }

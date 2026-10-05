@@ -25,8 +25,4 @@ public class DLLNode<T> {
     public DLLNode<T> getPrev() { // O(1)
         return prev;
     }
-
-    public DLLNode<T> getPrev(){
-        return prev;
-    }
 }
