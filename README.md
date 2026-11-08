@@ -104,7 +104,7 @@ Proyecto-ED/
     │   ├── DLLNode.java          nodo de la lista
     │   ├── MyQueue.java          interfaz de cola
     │   ├── Queue.java            cola con arreglo circular
-    │   └── ArbolAVL.java         árbol AVL de clave y valor (plantilla)
+    │   └── ArbolAVL.java         árbol AVL de clave y valor
     └── deportes/
         ├── Estudiante.java             ID, nombre, datos de contacto, deportes que practica y de interés
         ├── Deporte.java                nombre, tipo, horario, cupos, entrenador, lista de practicantes y colas
