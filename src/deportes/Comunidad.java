@@ -1,3 +1,4 @@
+package deportes;
 public class Comunidad {
 
     private int id;
