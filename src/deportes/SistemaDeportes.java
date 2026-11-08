@@ -15,7 +15,7 @@ import estructuras.DLL;
 public class SistemaDeportes {
 
     private final ArbolAVL<Integer, Estudiante> estudiantes = new ArbolAVL<>(); // acceso por ID
-    private final ArbolAVL<String, Deporte> deportes = new ArbolAVL<>(); // deportes por nombre
+    private final ArbolAVL<String, Deporte> deportes = new ArbolAVL<>(); // deportes por nombre normalizado
     private final ArbolAVL<ClaveRanking, Deporte> ranking = new ArbolAVL<>(); // deportes por practicantes
 
     // RF1. Registrar un estudiante: se busca el ID en el AVL de estudiantes para rechazar repetidos y cada
@@ -30,7 +30,7 @@ public class SistemaDeportes {
 
     // RF2. Datos completos de un estudiante por su ID, con una búsqueda en el AVL; null si no existe
     public Estudiante buscarEstudiante(int id) { // O(log n)
-        throw pendiente();
+        return estudiantes.buscar(id);
     }
 
     // RF3. Eliminar un estudiante: se quita del AVL de estudiantes y, con los nodos que guardó al
@@ -56,7 +56,7 @@ public class SistemaDeportes {
 
     // RF7. Deportes de más a menos practicantes (con empate, por nombre): recorrido inorden del ranking
     public DLL<Deporte> deportesPorPracticantes() { // O(d)
-        throw pendiente();
+        return ranking.valoresEnOrden();
     }
 
     private static UnsupportedOperationException pendiente() {
