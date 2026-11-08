@@ -132,7 +132,25 @@ En Windows, con PowerShell, el último comando es:
 javac -encoding UTF-8 -d out (Get-ChildItem -Recurse src -Filter *.java).FullName
 ```
 
-En la Entrega 1 todavía no hay programa principal que ejecutar: la lista doblemente enlazada y la cola ya funcionan, y el árbol AVL y `SistemaDeportes` son plantillas con un método por requisito funcional y un comentario de la estructura que usará cada uno. La lógica se implementa en la Entrega 2.
+El proyecto incluye pruebas manuales para RF2 y RF7 en `test/deportes/PruebasRF2RF7.java`. Esta clase tiene su propio método `main` y no forma parte del código de producción.
+
+En esta etapa RF1 aún no está implementado. Por eso, las pruebas preparan los árboles internos mediante reflexión para comprobar RF2 y RF7 de forma aislada; no prueban todavía el flujo completo de registro ni la integración de todas las estructuras. Cuando RF1 esté implementado, se podrán agregar pruebas de integración que registren estudiantes a través de la API pública del sistema.
+
+Para compilar el código de producción y las pruebas desde la raíz del proyecto:
+
+**Linux / macOS**
+```bash
+javac -encoding UTF-8 -d out $(find src test -name "*.java")
+java -cp out deportes.PruebasRF2RF7
+```
+
+**Windows / PowerShell**
+```powershell
+javac -encoding UTF-8 -d out (Get-ChildItem -Recurse src,test -Filter *.java).FullName
+java -cp out deportes.PruebasRF2RF7
+```
+
+Si todas las verificaciones pasan, la consola termina con el mensaje `Todas las pruebas de RF2 y RF7 finalizaron correctamente.`. Si una condición falla, se lanza un `AssertionError` con la descripción del caso.
 
 ## Estado del proyecto
 Se completó la **Entrega 1**.
