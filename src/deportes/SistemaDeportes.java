@@ -66,8 +66,9 @@ public class SistemaDeportes {
                 while (!colaEstudiantes.isEmpty()){
                     Estudiante actual = colaEstudiantes.dequeue();
 
-                    for(Deporte deporte : actual.getPractica()){
-                        if (!deportesVisitados.contains(deporte.get_Id())){
+                    for (Estudiante.Practica practica : actual.getPractica()) {
+                        Deporte deporte = practica.getDeporte();
+                        if (!deportesVisitados.contains(deporte.get_Id())) {
                             deportesVisitados.add(deporte.get_Id());
                             for (Estudiante estudianteInscrito : deporte.getListaInscritos()){
                                 if (!estudiantesVisitados.contains(estudianteInscrito.getId())){
