@@ -1,4 +1,6 @@
 package deportes;
+
+import estructuras.ArbolAVL;
 public class Comunidad {
 
     private int id;
