@@ -27,7 +27,7 @@ public class PruebasRF2RF7 {
         ArbolAVL<Integer, Estudiante> estudiantes = obtenerArbol(sistema, "estudiantes");
 
         Estudiante ana = new Estudiante(
-                "Ana Pérez", 1001, 20, 3001234567L > Integer.MAX_VALUE ? 0 : 123456789,
+                "Ana Pérez", 1001, 20, 123456789,
                 "ana@unal.edu.co", "Ingeniería", "Sistemas"
         );
         Estudiante luis = new Estudiante(
