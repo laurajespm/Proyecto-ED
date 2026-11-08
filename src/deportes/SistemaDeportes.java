@@ -2,6 +2,10 @@ package deportes;
 
 import estructuras.ArbolAVL;
 import estructuras.DLL;
+import estructuras.Queue;
+
+import java.util.HashSet;
+import java.util.Set;
 
 // Plantilla del sistema para la Entrega 1. Cada método corresponde a un requisito funcional del reporte
 // (RF1 a RF7) y su comentario dice qué estructura va a usar; la lógica se implementa en la Entrega 2.
