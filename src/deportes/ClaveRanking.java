@@ -1,14 +1,14 @@
 package deportes;
 
 // Clave del árbol AVL que ordena los deportes: primero los de más practicantes y, con empate, por nombre.
-// Cuando cambia la cantidad de un deporte, se saca del árbol con la clave vieja y se inserta con la nueva
+// El nombre se normaliza para ignorar mayúsculas y tildes en el desempate.
 public class ClaveRanking implements Comparable<ClaveRanking> {
     private final int cantidad;
-    private final String nombre;
+    private final String nombreNormalizado;
 
     public ClaveRanking(int cantidad, String nombre) {
         this.cantidad = cantidad;
-        this.nombre = nombre;
+        this.nombreNormalizado = NormalizadorNombre.normalizar(nombre);
     }
 
     @Override
@@ -16,6 +16,6 @@ public class ClaveRanking implements Comparable<ClaveRanking> {
         if (cantidad != otra.cantidad) {
             return Integer.compare(otra.cantidad, cantidad); // más practicantes va primero
         }
-        return nombre.compareTo(otra.nombre);
+        return nombreNormalizado.compareTo(otra.nombreNormalizado);
     }
 }
