@@ -42,8 +42,44 @@ public class SistemaDeportes {
     // RF4. Comunidades deportivas: desde cada estudiante que no se haya visitado se hace un recorrido por
     // anchura con la cola, pasando de estudiante a deporte y de deporte a sus practicantes; cada recorrido
     // encuentra un grupo, y un grupo de dos o más estudiantes es una comunidad
-    public DLL<DLL<Estudiante>> comunidades() { // O(n + m)
-        throw pendiente();
+    public DLL<Comunidad> comunidades() { // O(n log n + m)
+        DLL<Comunidad> listaComunidades = new DLL<>();
+        int id_comunidades = 1000;
+
+        Set<Integer> estudiantesVisitados = new HashSet<>();
+        Set<Integer> deportesVisitados = new HashSet<>();
+
+        DLL<Estudiante> listaEstudiantes = estudiantes.valoresEnOrden();
+
+        for(Estudiante estudiante : listaEstudiantes){
+            if (!estudiantesVisitados.contains(estudiante.getId())){
+                Comunidad comunidad = new Comunidad(id_comunidades);
+                Queue<Estudiante> colaEstudiantes = new Queue<>();
+
+                estudiantesVisitados.add(estudiante.getId());
+                comunidad.getEstudiantes().insertar(estudiante.getId(), estudiante);
+                colaEstudiantes.enqueue(estudiante);
+                while (!colaEstudiantes.isEmpty()){
+                    Estudiante actual = colaEstudiantes.dequeue();
+
+                    for(Deporte deporte : actual.getPractica()){
+                        if (!deportesVisitados.contains(deporte.get_Id())){
+                            deportesVisitados.add(deporte.get_Id());
+                            for (Estudiante estudianteInscrito : deporte.getListaInscritos()){
+                                if (!estudiantesVisitados.contains(estudianteInscrito.getId())){
+                                    estudiantesVisitados.add(estudianteInscrito.getId());
+                                    comunidad.getEstudiantes().insertar(estudianteInscrito.getId(), estudianteInscrito);
+                                    colaEstudiantes.enqueue(estudianteInscrito);
+                                }
+                            }
+                        }
+                    }
+                }
+                listaComunidades.pushBack(comunidad);
+                id_comunidades +=1;
+            }
+        }
+        return listaComunidades;
     }
 
     // RF5 y RF6. Conexión con alguien que practica uno de los deportes de interés del estudiante: recorrido
