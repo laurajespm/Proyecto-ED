@@ -67,9 +67,10 @@ En los costos, *n* es la cantidad de estudiantes, *d* la de deportes y *m* la de
 | Estructura | Uso | Requisitos | Costo |
 |------------|-----|------------|-------|
 | **AVL de estudiantes** (clave: ID) | Registrar, consultar y eliminar por ID | RF1, RF2, RF3 | O(log n)  |
+| **AVL de cada comunidad** (clave: ID) | Guardar a los miembros de una comunidad ordenados por ID | RF4 | O(log n) por miembro |
 | **AVL de deportes** (clave: nombre normalizado) | Buscar o crear cada deporte al registrar | RF1 | O(log d) |
 | **Listas doblemente enlazadas (DLL)** | Relación estudiante–deporte: cada estudiante tiene una DLL de deportes que practica y otra de los que le interesan; cada deporte tiene una DLL de practicantes | RF1, RF3, RF4, RF5 | Quitar un estudiante de la DLL de un deporte a partir de su referencia: O(1) |
-| **Cola** | Recorrido por anchura del grafo bipartito | RF4, RF5, RF6 | O(V + E), con V = n + d y E = m |
+| **Cola** | Recorrido por anchura del grafo bipartito | RF4, RF5, RF6 | O(V + E), con V = n + d y E = m; las comunidades cuestan O(n log n + m) porque cada miembro se inserta en el AVL de su comunidad |
 | **AVL del ranking** (clave: número de practicantes, nombre) | Listar deportes de más a menos practicantes con un recorrido inorden | RF7 | Listar: O(d); actualizar un deporte: O(log d) |
 
 La **cola** también se usa dentro de las clases: cada `Deporte` tiene una cola de solicitudes y otra de espera de inscripción, y cada `Estudiante` una de solicitudes pendientes. Es un arreglo circular que duplica su tamaño al llenarse, así que el número con que se crea es el tamaño inicial y no un límite.
@@ -78,7 +79,7 @@ La **cola** también se usa dentro de las clases: cada `Deporte` tiene una cola 
 
 - **AVL:** busca, inserta y elimina en O(log n) en el peor caso. Una lista costaría O(n) por búsqueda; un arreglo ordenado inserta y elimina en O(n); un árbol binario de búsqueda sin balancear se degenera en lista si los ID llegan en orden. Una tabla hash daría O(1) en promedio, pero es un tema posterior del curso y se evaluará en la Entrega 3.
 - **DLL:** cada estudiante guarda el nodo que ocupa en la DLL de cada deporte que practica, por lo que al eliminarlo se quita en O(1). Además hacen de listas de adyacencia, así que no hace falta un grafo aparte: unir a los estudiantes entre sí exigiría k(k−1)/2 aristas por deporte con k practicantes, en lugar de k.  Cada nodo recuerda a qué lista pertenece, de modo que borrar un nodo que ya fue borrado o que es de otra lista lanza una excepción en lugar de dañar la lista, y esa comprobación sigue siendo O(1).
-- **Cola:** el recorrido por anchura visita a los estudiantes por niveles, así que el primero encontrado que practica un deporte de interés es el de menos intermediarios. Si la cola se vacía sin encontrarlo, la conexión no existe. Una pila daría un recorrido en profundidad y no aseguraría el camino más corto.
+- **Cola:** el recorrido por anchura visita a los estudiantes por niveles, así que el primero encontrado que practica un deporte de interés es el de menos intermediarios. Si la cola se vacía sin encontrarlo, la conexión no existe. Una pila daría un recorrido en profundidad y no aseguraría el camino más corto. Para saber si un estudiante o un deporte ya se visitó no se usan conjuntos de `java.util`: cada uno guarda el número del último recorrido que pasó por él, y comparar ese número cuesta O(1).
 - **AVL del ranking:** al cambiar la cantidad de practicantes, el deporte se saca y se vuelve a insertar en O(log d). Un heap daría el deporte con más practicantes en O(1), pero listarlos todos en orden costaría O(d log d) en cada consulta.
 
 ## Flujo general
@@ -89,8 +90,9 @@ La **cola** también se usa dentro de las clases: cada `Deporte` tiene una cola 
    2. **Consultar (RF2):** busca en el AVL de estudiantes y muestra sus datos, o avisa que no existe.
    3. **Eliminar (RF3):** elimina del AVL de estudiantes, lo quita de la DLL de cada deporte que practicaba y actualiza el ranking.
    4. **Comunidades (RF4):** recorre a los estudiantes en orden de ID; desde cada uno sin visitar hace un recorrido por anchura con la cola. Un grupo de dos o más estudiantes es una comunidad.
-   5. **Conexión (RF5 y RF6):** encola al estudiante que hace la consulta y saca estudiantes de la cola hasta encontrar uno que practique un deporte de interés (conexión encontrada) o hasta que la cola se vacíe (no hay conexión).
+   5. **Conexión (RF5 y RF6):** encola al estudiante que hace la consulta y recorre por niveles; cada estudiante se revisa al descubrirlo, y el recorrido termina con el primero que practique un deporte de interés (conexión encontrada, con el camino) o cuando la cola se vacía (no hay conexión).
    6. **Ranking (RF7):** recorrido inorden del AVL del ranking.
+   7. Además: cargar un archivo, listar a todos los estudiantes, ver los practicantes de un deporte y dibujar el AVL de estudiantes (para pocos datos).
 
 
 ## Estructura del repositorio
@@ -98,64 +100,88 @@ La **cola** también se usa dentro de las clases: cada `Deporte` tiene una cola 
 ```text
 Proyecto-ED/
 ├── README.md
-└── src/
-    ├── estructuras/
-    │   ├── DLL.java              lista doblemente enlazada
-    │   ├── DLLNode.java          nodo de la lista
-    │   ├── MyQueue.java          interfaz de cola
-    │   ├── Queue.java            cola con arreglo circular
-    │   └── ArbolAVL.java         árbol AVL de clave y valor
-    └── deportes/
-        ├── Estudiante.java             ID, nombre, datos de contacto, deportes que practica y de interés
-        ├── Deporte.java                nombre, tipo, horario, cupos, entrenador, lista de practicantes y colas
-        ├── CursoIntersemestral.java    deporte de tipo intersemestral (periodo y duración en semanas)
-        ├── DeporteRepresentativo.java  deporte de tipo representativo (nivel requerido, convocatoria, capitán, titulares)
-        ├── Recreativo.java             deporte de tipo recreativo (asistencia mínima, cancelación voluntaria)
-        ├── Solicitud.java              clase vacía, sin uso todavía
-        ├── ClaveRanking.java           orden de los deportes por número de practicantes
-        └── SistemaDeportes.java        un método por requisito funcional (plantilla)
+├── datos/
+│   └── estudiantes.txt              16 estudiantes de ejemplo
+├── resultados/
+│   ├── graficar.py                  dibuja las gráficas a partir de tiempos.csv
+│   ├── tiempos.csv                  mediciones del Analizador
+│   └── tiempos_*.png / *.csv        gráficas, tabla y razones de crecimiento
+├── src/
+│   ├── estructuras/
+│   │   ├── DLL.java                 lista doblemente enlazada (iterable)
+│   │   ├── DLLNode.java             nodo de la lista
+│   │   ├── MyQueue.java             interfaz de cola
+│   │   ├── Queue.java               cola con arreglo circular que crece
+│   │   └── ArbolAVL.java            árbol AVL de clave y valor
+│   ├── deportes/
+│   │   ├── SistemaDeportes.java     un método por requisito funcional (RF1 a RF7)
+│   │   ├── Estudiante.java          ID, nombre, datos de contacto, deportes que practica y de interés
+│   │   ├── Deporte.java             nombre, tipo, horario, cupos, entrenador, practicantes y colas
+│   │   ├── CursoIntersemestral.java, DeporteRepresentativo.java, Recreativo.java   tipos de deporte
+│   │   ├── Comunidad.java           grupo de estudiantes que comparten deportes (AVL por ID)
+│   │   ├── ClaveRanking.java        orden de los deportes por número de practicantes
+│   │   ├── NormalizadorNombre.java  compara nombres sin tildes, mayúsculas ni espacios de más
+│   │   └── Solicitud.java           solicitud de un estudiante a un deporte
+│   ├── app/
+│   │   └── Main.java                menú de consola
+│   └── analisis/
+│       ├── GeneradorDatos.java      datos de prueba al azar con semilla
+│       └── Analizador.java          mide los tiempos de cada operación
+└── test/
+    ├── deportes/PruebasRF2RF7.java  pruebas de RF2 y RF7
+    └── pruebas/PruebasSistema.java  pruebas de las estructuras y de RF1 a RF7 (52 casos)
 ```
+
+Las estructuras de datos están implementadas desde cero; no se usan las colecciones de `java.util`. El código del sistema solo usa de Java el `Scanner` y la lectura de archivos del menú, y `java.text.Normalizer` para quitar las tildes. Las pruebas y el analizador usan `Random` para generar datos.
 
 ## Requisitos, compilación y ejecución
 
-Java 17 o superior; no se usa Maven ni Gradle, basta con el JDK.
+Java 17 o superior; no se usa Maven ni Gradle, basta con el JDK. Las gráficas necesitan Python 3 con matplotlib (opcional).
 
 ```bash
 git clone https://github.com/laurajespm/Proyecto-ED.git
 cd Proyecto-ED
-javac -encoding UTF-8 -d out $(find src -name "*.java")
+javac -encoding UTF-8 -d out $(find src test -name "*.java")
 ```
 
 En Windows, con PowerShell, el último comando es:
 
 ```powershell
-javac -encoding UTF-8 -d out (Get-ChildItem -Recurse src -Filter *.java).FullName
-```
-
-El proyecto incluye pruebas manuales para RF2 y RF7 en `test/deportes/PruebasRF2RF7.java`. Esta clase tiene su propio método `main` y no forma parte del código de producción.
-
-En esta etapa RF1 aún no está implementado. Por eso, las pruebas preparan los árboles internos mediante reflexión para comprobar RF2 y RF7 de forma aislada; no prueban todavía el flujo completo de registro ni la integración de todas las estructuras. Cuando RF1 esté implementado, se podrán agregar pruebas de integración que registren estudiantes a través de la API pública del sistema.
-
-Para compilar el código de producción y las pruebas desde la raíz del proyecto:
-
-**Linux / macOS**
-```bash
-javac -encoding UTF-8 -d out $(find src test -name "*.java")
-java -cp out deportes.PruebasRF2RF7
-```
-
-**Windows / PowerShell**
-```powershell
 javac -encoding UTF-8 -d out (Get-ChildItem -Recurse src,test -Filter *.java).FullName
+```
+
+### Programa
+
+```bash
+java -cp out app.Main datos/estudiantes.txt
+```
+
+El archivo es opcional. Tiene una línea por estudiante con cuatro campos separados por punto y coma (`id;nombre;deportes que practica;deportes que le interesan`); los deportes de cada lista van separados por coma y cualquiera de las dos listas puede quedar vacía. Las líneas vacías y las que empiezan con `#` se ignoran. El archivo se lee en UTF-8.
+
+Con los datos de ejemplo, la opción 4 muestra tres comunidades (de 8, 3 y 3 estudiantes); la opción 5 con el ID 1001 muestra que Ana Torres llega a Marta Díaz, que practica natación, a través de Luis Peña; con 1012 sale una conexión directa y con 1004 se informa que no existe conexión.
+
+### Pruebas
+
+```bash
+java -cp out pruebas.PruebasSistema
 java -cp out deportes.PruebasRF2RF7
 ```
 
-Si todas las verificaciones pasan, la consola termina con el mensaje `Todas las pruebas de RF2 y RF7 finalizaron correctamente.`. Si una condición falla, se lanza un `AssertionError` con la descripción del caso.
+`PruebasSistema` imprime PASÓ o FALLÓ por cada caso y termina con código 1 si alguno falla. Incluye casos borde de la lista, la cola y el AVL (eliminar hojas, nodos con un hijo y con dos hijos, 20 000 operaciones al azar y la altura del AVL), cada requisito funcional y una prueba que compara 12 000 conexiones con un cálculo independiente de la distancia mínima. `PruebasRF2RF7` prueba RF2 y RF7 por separado.
+
+### Mediciones
+
+```bash
+java -Xmx6g -cp out analisis.Analizador
+python3 resultados/graficar.py
+```
+
+El analizador genera estudiantes al azar con semilla fija y mide cada operación con `System.nanoTime` para n = 1 000, 10 000, 100 000 y 1 000 000 (opciones al inicio de `Analizador.java`, por ejemplo `--tamanos=10000,100000 --vueltas=5`). Guarda `resultados/tiempos.csv`, y `graficar.py` dibuja una gráfica por estructura con la curva teórica ajustada, una tabla y las razones de crecimiento entre tamaños.
 
 ## Estado del proyecto
-Se completó la **Entrega 1**.
 
 - **Entrega 1:** reporte con comprensión del problema, MVP, estructuras elegidas y flujo general, más las estructuras base y las plantillas del código.
+- **Entrega 2:** sistema completo con RF1 a RF7, menú de consola, datos de ejemplo, pruebas y mediciones de tiempo con sus gráficas.
 
 ## Referencias
 
