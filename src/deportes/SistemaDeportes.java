@@ -112,7 +112,7 @@ public class SistemaDeportes {
             while (!cola.isEmpty()) {
                 Estudiante actual = cola.dequeue();
                 comunidad.getEstudiantes().insertar(actual.getId(), actual);
-                encolarVecinos(actual, cola);
+                encolarVecinos(actual, cola, false);
             }
             if (comunidad.getEstudiantes().size() > 1) {
                 listaComunidades.pushBack(comunidad);
@@ -123,9 +123,11 @@ public class SistemaDeportes {
     }
 
     // RF5 y RF6. Conexión con alguien que practica uno de los deportes de interés del estudiante: recorrido por
-    // anchura desde él. La cola visita por niveles, así que el primer estudiante que practica un deporte de
-    // interés es el de menos intermediarios. Retorna el camino (del estudiante al contacto) o una lista vacía si
-    // la conexión no existe. Lanza una excepción si el ID no está registrado
+    // anchura desde él. La cola descubre a los estudiantes por niveles (primero los que comparten un deporte con
+    // él, luego los que están a un intermediario...), así que el primero descubierto que practica un deporte de
+    // interés es el de menos intermediarios. Cada estudiante se revisa en cuanto se descubre y no cuando sale de
+    // la cola: el camino es el mismo, pero el recorrido se detiene antes. Retorna el camino (del estudiante al
+    // contacto) o una lista vacía si la conexión no existe. Lanza una excepción si el ID no está registrado
     public DLL<Estudiante> buscarConexion(int id) { // O(i + n + m)
         Estudiante origen = buscarObligatorio(id);
         DLL<Estudiante> camino = new DLL<>();
@@ -141,14 +143,14 @@ public class SistemaDeportes {
         visitar(origen, null, cola);
         while (!cola.isEmpty()) {
             Estudiante actual = cola.dequeue();
-            if (actual != origen && deporteDeInteresQuePractica(actual) != null) {
+            Estudiante contacto = encolarVecinos(actual, cola, true);
+            if (contacto != null) {
                 // se reconstruye el camino hacia atrás con la referencia que dejó el recorrido
-                for (Estudiante e = actual; e != null; e = e.anterior) {
+                for (Estudiante e = contacto; e != null; e = e.anterior) {
                     camino.pushFront(e);
                 }
                 return camino;
             }
-            encolarVecinos(actual, cola);
         }
         return camino;
     }
@@ -225,8 +227,9 @@ public class SistemaDeportes {
 
     // Encola a los estudiantes que comparten un deporte con actual y que no se han visitado. Cada deporte se
     // expande una sola vez por recorrido, así que en total cada pareja (estudiante, deporte) se revisa un
-    // número constante de veces y el recorrido completo cuesta O(n + m)
-    private void encolarVecinos(Estudiante actual, Queue<Estudiante> cola) {
+    // número constante de veces y el recorrido completo cuesta O(n + m). Si buscarContacto es true, retorna el
+    // primer vecino nuevo que practica un deporte de interés (o null si no hay)
+    private Estudiante encolarVecinos(Estudiante actual, Queue<Estudiante> cola, boolean buscarContacto) {
         for (Estudiante.Practica practica : actual.getPractica()) {
             Deporte deporte = practica.getDeporte();
             if (deporte.marcaVisita == numeroRecorrido) {
@@ -236,9 +239,13 @@ public class SistemaDeportes {
             for (Estudiante vecino : deporte.getListaInscritos()) {
                 if (vecino.marcaVisita != numeroRecorrido) {
                     visitar(vecino, actual, cola);
+                    if (buscarContacto && deporteDeInteresQuePractica(vecino) != null) {
+                        return vecino;
+                    }
                 }
             }
         }
+        return null;
     }
 
     private Deporte deporteDeInteresQuePractica(Estudiante estudiante) { // O(p)
