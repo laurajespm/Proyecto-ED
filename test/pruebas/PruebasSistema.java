@@ -10,6 +10,7 @@ import estructuras.DLLNode;
 import estructuras.Queue;
 
 // Casos borde de las estructuras y de cada requisito del sistema. Imprime si cada caso pasó o falló.
+// java.util solo se usa aquí, en las pruebas, para generar datos al azar y en el cálculo de comparación.
 // Uso: java -cp out pruebas.PruebasSistema
 public class PruebasSistema {
 
@@ -23,6 +24,7 @@ public class PruebasSistema {
         ejecutar("SistemaDeportes: registro, consulta y eliminación", PruebasSistema::probarRegistro);
         ejecutar("SistemaDeportes: comunidades y conexiones", PruebasSistema::probarConexiones);
         ejecutar("SistemaDeportes: deportes ordenados por practicantes", PruebasSistema::probarRanking);
+        ejecutar("SistemaDeportes: conexión comparada con un cálculo independiente", PruebasSistema::probarConexionAlAzar);
 
         System.out.println();
         System.out.println(pasaron + " de " + total + " pruebas pasaron");
@@ -277,6 +279,95 @@ public class PruebasSistema {
         Deporte ultimo = s.deportesPorPracticantes().getTail().getData();
         verificar("al eliminar, baja: voleibol queda de último con 0", ultimo.getNombreCurso().equals("Voleibol")
                 && ultimo.getCantidadPracticantes() == 0);
+    }
+
+    // 300 sistemas al azar de 40 estudiantes y 10 deportes. Para cada estudiante se calcula aparte, con una
+    // matriz de quién comparte deporte con quién y un recorrido por niveles con arreglos, la menor cantidad de
+    // pasos hasta alguien que practique un deporte de interés, y se compara con el camino del sistema
+    static void probarConexionAlAzar() {
+        java.util.Random azar = new java.util.Random(7);
+        int casos = 0;
+        boolean bien = true;
+        for (int prueba = 0; prueba < 300; prueba++) {
+            int n = 40, d = 10;
+            boolean[][] practica = new boolean[n][d];
+            boolean[][] interes = new boolean[n][d];
+            SistemaDeportes s = new SistemaDeportes();
+            for (int e = 0; e < n; e++) {
+                int cuantos = azar.nextInt(3); // de 0 a 2 deportes, para que haya varias comunidades
+                String[] p = new String[cuantos];
+                for (int k = 0; k < cuantos; k++) {
+                    int dep = azar.nextInt(d);
+                    practica[e][dep] = true;
+                    p[k] = "D" + dep;
+                }
+                int dep = azar.nextInt(d);
+                if (!practica[e][dep]) {
+                    interes[e][dep] = true;
+                }
+                s.registrarEstudiante(e, "E" + e, p, new String[] { "D" + dep });
+            }
+            for (int origen = 0; origen < n; origen++) {
+                int esperado = distanciaMinima(origen, practica, interes);
+                DLL<Estudiante> camino = s.buscarConexion(origen);
+                casos++;
+                if (esperado < 0) {
+                    bien &= camino.isEmpty();
+                    continue;
+                }
+                bien &= camino.size() - 1 == esperado && caminoValido(camino, practica, interes, origen);
+            }
+        }
+        verificar("en " + casos + " consultas el camino tiene la menor cantidad de intermediarios posible", bien);
+    }
+
+    // pasos del recorrido por niveles hasta el primero que practica un deporte de interés de origen; -1 si no hay
+    static int distanciaMinima(int origen, boolean[][] practica, boolean[][] interes) {
+        int n = practica.length;
+        int[] distancia = new int[n];
+        java.util.Arrays.fill(distancia, -1);
+        int[] cola = new int[n];
+        int frente = 0, fin = 0;
+        distancia[origen] = 0;
+        cola[fin++] = origen;
+        while (frente < fin) {
+            int actual = cola[frente++];
+            if (actual != origen) {
+                for (int dep = 0; dep < practica[actual].length; dep++) {
+                    if (practica[actual][dep] && interes[origen][dep]) {
+                        return distancia[actual];
+                    }
+                }
+            }
+            for (int otro = 0; otro < n; otro++) {
+                if (distancia[otro] < 0 && comparten(practica[actual], practica[otro])) {
+                    distancia[otro] = distancia[actual] + 1;
+                    cola[fin++] = otro;
+                }
+            }
+        }
+        return -1;
+    }
+
+    static boolean comparten(boolean[] a, boolean[] b) {
+        for (int i = 0; i < a.length; i++) {
+            if (a[i] && b[i]) {
+                return true;
+            }
+        }
+        return false;
+    }
+
+    static boolean caminoValido(DLL<Estudiante> camino, boolean[][] practica, boolean[][] interes, int origen) {
+        if (camino.getHead().getData().getId() != origen) {
+            return false;
+        }
+        for (DLLNode<Estudiante> n = camino.getHead(); n.getNext() != null; n = n.getNext()) {
+            if (!comparten(practica[n.getData().getId()], practica[n.getNext().getData().getId()])) {
+                return false;
+            }
+        }
+        return comparten(practica[camino.getTail().getData().getId()], interes[origen]);
     }
 
     static String ranking(SistemaDeportes s) {
