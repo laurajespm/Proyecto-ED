@@ -3,7 +3,8 @@ package deportes;
 import java.text.Normalizer;
 import java.util.Locale;
 
-// Normaliza nombres para que las búsquedas y comparaciones ignoren mayúsculas y tildes.
+// Normaliza nombres para que las búsquedas y comparaciones ignoren mayúsculas, tildes y espacios de más.
+// "Fútbol", "  futbol " y "FÚTBOL" quedan como "futbol".
 public final class NormalizadorNombre {
 
     private NormalizadorNombre() {
@@ -17,6 +18,7 @@ public final class NormalizadorNombre {
 
         return Normalizer.normalize(nombre.strip(), Normalizer.Form.NFD)
                 .replaceAll("\\p{M}+", "")
-                .toLowerCase(Locale.ROOT);
+                .toLowerCase(Locale.ROOT)
+                .replaceAll("\\s+", " ");
     }
 }
