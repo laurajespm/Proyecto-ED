@@ -331,7 +331,7 @@ public class Analizador {
         int veces = Math.max(1, 100_000 / n);
 
         describirComunidades(sistema, n);
-        medir("SistemaDeportes", "comunidades", n, dTexto, veces, "O(n+m)", v -> {
+        medir("SistemaDeportes", "comunidades", n, dTexto, veces, "O(n log n)", v -> { // O(n log n + m): AVL por comunidad
             long acumulado = 0;
             long t0 = System.nanoTime();
             for (int i = 0; i < veces; i++) {
