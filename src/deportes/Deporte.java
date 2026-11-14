@@ -10,7 +10,6 @@ public class Deporte{
     private final String nombreCurso;
     private String horario;
     private final int cuposMaximos;
-    private int cuposDisponibles;
     final String tipoCurso;
     private String entrenador;
 
@@ -23,7 +22,6 @@ public class Deporte{
         this.nombreCurso = nombre;
         this.horario = horario;
         this.cuposMaximos = cupos;
-        this.cuposDisponibles = cuposMaximos;
         this.tipoCurso = tipo_curso;
         this.entrenador = entrenador;
 
@@ -53,7 +51,7 @@ public class Deporte{
     }
 
     public int getCuposDisponibles() {
-        return cuposMaximos - listaInscritos.size();
+        return Math.max(0,cuposMaximos - listaInscritos.size());
     }
 
     public void setCuposDisponibles(int cuposDisponibles) {
@@ -93,7 +91,7 @@ public class Deporte{
                 "id=" + id +
                 ", nombre='" + nombreCurso + '\'' +
                 ", tipo='" + tipoCurso + '\'' +
-                ", cuposDisponibles=" + cuposDisponibles + "/" + cuposMaximos +
+                ", cuposDisponibles=" + getCuposDisponibles() + "/" + cuposMaximos +
                 '}';
     }
 

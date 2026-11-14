@@ -13,7 +13,7 @@ public class DeporteRepresentativo extends Deporte{
         this.requisitosNivel = requisitosNivel;
         this.estadoConvocatoria = estadoConvocatoria;
         this.capitanPrincipal = capitanPrincipal;
-        this.titulares = new DLL<Estudiante>();
+        this.titulares = titulares == null ? new DLL<Estudiante>() : Titulares;
     }
 
     public String getRequisitosNivel() {
