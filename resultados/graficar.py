@@ -34,6 +34,8 @@ def modelo(fila):
         return math.log2(fila["n"])
     if t in ("O(n)", "O(n+m)"):
         return float(fila["n"])
+    if t == "O(n log n)":
+        return fila["n"] * math.log2(fila["n"])
     if t == "O(d)" and fila["d"] is not None:
         return float(fila["d"])
     return None
@@ -62,6 +64,8 @@ def esperado(teorica):
         return "cerca de 0 (crece despacio)"
     if teorica in ("O(n)", "O(n+m)"):
         return "1"
+    if teorica == "O(n log n)":
+        return "un poco más de 1"
     if teorica == "O(d)":
         return "0 si d es fijo, 1 si d crece con n"
     return "-"

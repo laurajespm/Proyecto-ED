@@ -1,5 +1,9 @@
 package estructuras;
 
+// Árbol AVL de clave y valor: árbol binario de búsqueda que después de cada inserción o eliminación revisa el
+// factor de balance de los nodos del camino y hace rotaciones para que las alturas de los dos subárboles de
+// cada nodo no difieran en más de 1. Así la altura queda en O(log n) aunque las claves lleguen en orden.
+// Los valores no pueden ser null, porque buscar retorna null para decir que la clave no está.
 public class ArbolAVL<K extends Comparable<K>, V> {
 
     private static class Nodo<K, V> {
@@ -33,7 +37,8 @@ public class ArbolAVL<K extends Comparable<K>, V> {
         }
     }
 
-    public V buscar(K clave) {
+    public V buscar(K clave) { // O(log n)
+        revisarClave(clave);
         Nodo<K, V> actual = raiz;
         while (actual != null) {
             int cmp = clave.compareTo(actual.clave);
@@ -45,7 +50,16 @@ public class ArbolAVL<K extends Comparable<K>, V> {
         return null;
     }
 
-    public void insertar(K clave, V valor) {
+    public boolean contiene(K clave) { // O(log n)
+        return buscar(clave) != null;
+    }
+
+    // inserta la pareja; si la clave ya existe, cambia el valor
+    public void insertar(K clave, V valor) { // O(log n)
+        revisarClave(clave);
+        if (valor == null) {
+            throw new IllegalArgumentException("El valor no puede ser null");
+        }
         raiz = insertarRecursivo(raiz, clave, valor);
     }
 
@@ -90,7 +104,8 @@ public class ArbolAVL<K extends Comparable<K>, V> {
         return nodo;
     }
 
-    public V eliminar(K clave) {
+    // quita la clave y retorna su valor, o null si no estaba
+    public V eliminar(K clave) { // O(log n)
         V valorEliminado = buscar(clave);
         if (valorEliminado != null) {
             raiz = eliminarRecursivo(raiz, clave);
@@ -114,24 +129,14 @@ public class ArbolAVL<K extends Comparable<K>, V> {
             if (nodo.izquierdo == null || nodo.derecho == null) {
                 nodo = (nodo.izquierdo != null) ? nodo.izquierdo : nodo.derecho;
             } else {
+                // con dos hijos, el nodo se reemplaza por su sucesor inorden (el menor del subárbol derecho).
+                // La clave es final, así que se crea un nodo nuevo con la clave y el valor del sucesor, que
+                // hereda los hijos, y el sucesor se borra una sola vez del subárbol derecho
                 Nodo<K, V> sucesor = nodoMinimo(nodo.derecho);
-                
-                // Usamos un nodo temporal o modificamos los campos directamente para evitar perder la inmutabilidad de 'clave' si fuera necesario, 
-                // pero dado que 'clave' en tu plantilla es final, recreamos la estructura de punteros o copiamos los campos no-finales.
-                // Como 'clave' es final, no podemos hacer nodo.clave = sucesor.clave. 
-                // En su lugar, removemos el sucesor de abajo y reemplazamos el contenido de este nodo de forma segura:
-                nodo.valor = sucesor.valor;
-                // Para solucionar que 'clave' es final, pasamos el valor de la clave al eliminar recursivo:
-                nodo.derecho = eliminarRecursivo(nodo.derecho, sucesor.clave);
-                
-                // NOTA: Para mantener consistencia con clave 'final', la simulación de intercambiar el valor se hace modificando las referencias o re-enlazando.
-                // Sin embargo, esta es la estrategia clásica de reemplazo de contenido adaptada a claves inmutables.
-                // Creamos un nodo sustituto que herede los hijos del actual pero con la clave/valor del sucesor
-                Nodo<K, V> nuevoNodo = new Nodo<>(sucesor.clave, sucesor.valor);
-                nuevoNodo.izquierdo = nodo.izquierdo;
-                nuevoNodo.derecho = eliminarRecursivo(nodo.derecho, sucesor.clave);
-                nuevoNodo.altura = nodo.altura;
-                nodo = nuevoNodo;
+                Nodo<K, V> reemplazo = new Nodo<>(sucesor.clave, sucesor.valor);
+                reemplazo.izquierdo = nodo.izquierdo;
+                reemplazo.derecho = eliminarRecursivo(nodo.derecho, sucesor.clave);
+                nodo = reemplazo;
             }
         }
 
@@ -171,7 +176,8 @@ public class ArbolAVL<K extends Comparable<K>, V> {
         return actual;
     }
 
-    public DLL<V> valoresEnOrden() {
+    // valores ordenados por clave (recorrido inorden)
+    public DLL<V> valoresEnOrden() { // O(n)
         DLL<V> lista = new DLL<>();
         valoresEnOrdenRecursivo(raiz, lista);
         return lista;
@@ -180,17 +186,48 @@ public class ArbolAVL<K extends Comparable<K>, V> {
     private void valoresEnOrdenRecursivo(Nodo<K, V> nodo, DLL<V> lista) {
         if (nodo != null) {
             valoresEnOrdenRecursivo(nodo.izquierdo, lista);
-            lista.add(nodo.valor); 
+            lista.pushBack(nodo.valor);
             valoresEnOrdenRecursivo(nodo.derecho, lista);
         }
     }
 
-    public int size() {
+    public int size() { // O(1)
         return tamano;
     }
 
-    public boolean isEmpty() {
+    public boolean isEmpty() { // O(1)
         return raiz == null;
+    }
+
+    // número de niveles: 0 si está vacío, 1 si solo tiene la raíz
+    public int altura() { // O(1)
+        return altura(raiz);
+    }
+
+    // dibujo del árbol acostado (la raíz a la izquierda y el subárbol derecho arriba), con la altura de cada
+    // nodo entre corchetes; sirve para ver las rotaciones con pocos datos
+    public String dibujar() { // O(n)
+        if (raiz == null) {
+            return "(árbol vacío)\n";
+        }
+        StringBuilder texto = new StringBuilder();
+        dibujar(raiz, "", texto);
+        return texto.toString();
+    }
+
+    private void dibujar(Nodo<K, V> nodo, String sangria, StringBuilder texto) {
+        if (nodo == null) {
+            return;
+        }
+        dibujar(nodo.derecho, sangria + "        ", texto);
+        texto.append(sangria).append(nodo.clave).append(" [").append(nodo.altura).append("]\n");
+        dibujar(nodo.izquierdo, sangria + "        ", texto);
+    }
+
+    private void revisarClave(K clave) {
+        if (clave == null) {
+            throw new IllegalArgumentException("La clave no puede ser null");
+        }
     }
 
     private Nodo<K, V> rotarDerecha(Nodo<K, V> nodo) {

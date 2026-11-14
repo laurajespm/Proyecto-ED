@@ -19,6 +19,11 @@ public class Estudiante implements Comparable<Estudiante> {
     private final DLL<Deporte> intereses;
     private final Queue<Deporte> solicitudesPendientes;
 
+    // datos que usa el recorrido por anchura de SistemaDeportes: en qué recorrido se visitó por última vez y
+    // desde qué estudiante se llegó, para reconstruir el camino de la conexión
+    int marcaVisita;
+    Estudiante anterior;
+
     public static class Practica {
 
         private final Deporte deporte;

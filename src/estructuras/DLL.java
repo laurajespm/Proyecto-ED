@@ -1,8 +1,11 @@
 package estructuras;
 
+import java.util.Iterator;
+import java.util.NoSuchElementException;
+
 // Lista doblemente enlazada con head, tail y contador. Como cada nodo conoce a su anterior,
 // teniendo la referencia a un nodo se puede borrar o insertar junto a él en O(1)
-public class DLL<T> {
+public class DLL<T> implements Iterable<T> {
     private DLLNode<T> head;
     private DLLNode<T> tail;
     private int count;
@@ -26,6 +29,11 @@ public class DLL<T> {
         }
         count++;
         return n;
+    }
+
+    // Alias de pushBack para código que trata la DLL como una colección.
+    public DLLNode<T> add(T data) { // O(1)
+        return pushBack(data);
     }
 
     public DLLNode<T> pushFront(T data) { // O(1)
@@ -170,6 +178,28 @@ public class DLL<T> {
 
     public DLLNode<T> getTail() { // O(1)
         return tail;
+    }
+
+    @Override
+    public Iterator<T> iterator() {
+        return new Iterator<T>() {
+            private DLLNode<T> actual = head;
+
+            @Override
+            public boolean hasNext() {
+                return actual != null;
+            }
+
+            @Override
+            public T next() {
+                if (actual == null) {
+                    throw new NoSuchElementException();
+                }
+                T dato = actual.getData();
+                actual = actual.getNext();
+                return dato;
+            }
+        };
     }
 
     @Override

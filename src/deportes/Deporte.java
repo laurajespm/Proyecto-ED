@@ -10,7 +10,6 @@ public class Deporte{
     private final String nombreCurso;
     private String horario;
     private final int cuposMaximos;
-    private int cuposDisponibles;
     final String tipoCurso;
     private String entrenador;
 
@@ -18,16 +17,21 @@ public class Deporte{
     private DLL<Estudiante> listaInscritos;
     private Queue<Estudiante> colaEsperaInscripcion;
 
+    // marcas que usan los recorridos por anchura de SistemaDeportes: en qué recorrido se expandió el deporte
+    // por última vez y en qué búsqueda de conexión es un deporte de interés (ver allí la explicación)
+    int marcaVisita;
+    int marcaInteres;
+
     public Deporte(int id, String nombre, String horario, int cupos, String tipo_curso, String entrenador){
         this.id = id;
         this.nombreCurso = nombre;
         this.horario = horario;
         this.cuposMaximos = cupos;
-        this.cuposDisponibles = cuposMaximos;
         this.tipoCurso = tipo_curso;
         this.entrenador = entrenador;
 
-        this.colaSolicitudes = new Queue<Estudiante>(Math.max(1, cuposMaximos));
+        // la cola crece sola, así que no se reserva un arreglo del tamaño de los cupos (pueden ser muchos)
+        this.colaSolicitudes = new Queue<Estudiante>(Math.max(1, Math.min(cuposMaximos, 16)));
         this.listaInscritos = new DLL <Estudiante>();
         this.colaEsperaInscripcion = new Queue<Estudiante>(10);
     }
@@ -53,11 +57,7 @@ public class Deporte{
     }
 
     public int getCuposDisponibles() {
-        return cuposMaximos - listaInscritos.size();
-    }
-
-    public void setCuposDisponibles(int cuposDisponibles) {
-        this.cuposDisponibles = cuposDisponibles;
+        return Math.max(0,cuposMaximos - listaInscritos.size());
     }
 
     public int getCantidadPracticantes(){
@@ -93,7 +93,7 @@ public class Deporte{
                 "id=" + id +
                 ", nombre='" + nombreCurso + '\'' +
                 ", tipo='" + tipoCurso + '\'' +
-                ", cuposDisponibles=" + cuposDisponibles + "/" + cuposMaximos +
+                ", cuposDisponibles=" + getCuposDisponibles() + "/" + cuposMaximos +
                 '}';
     }
 

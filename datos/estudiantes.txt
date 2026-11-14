@@ -1,0 +1,18 @@
+# Datos de ejemplo. Una línea por estudiante:
+# id;nombre;deportes que practica (separados por coma);deportes que le interesan (separados por coma)
+1001;Ana Torres;Fútbol,Atletismo;Natación
+1002;Luis Peña;Fútbol,Rugby;Voleibol
+1003;Marta Díaz;Rugby,Natación;
+1004;Carlos Rojas;Natación,Baloncesto;Taekwondo
+1005;Sofía Gómez;Baloncesto,Voleibol;Rugby
+1006;Andrés Castillo;Voleibol;Fútbol
+1007;Valentina Ruiz;Atletismo;Fútbol,Baloncesto
+1008;Julián Moreno;Taekwondo,Judo;Natación
+1009;Camila Herrera;Judo;Ajedrez
+1010;Mateo Vargas;Taekwondo;Rugby
+1011;Laura Ortiz;Ajedrez,Tenis de mesa;Fútbol
+1012;Daniel Suárez;Tenis de mesa;Ajedrez
+1013;Paula Jiménez;Ajedrez;Natación
+1014;Sebastián León;Ultimate;Fútbol
+1015;Natalia Cruz;Natación;Ultimate
+1016;Felipe Ramírez;;Baloncesto
