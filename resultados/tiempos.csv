@@ -1,0 +1,62 @@
+# Mediciones del Analizador, 2026-11-14T11:42:18
+# Java 24.0.2 (Java HotSpot(TM) 64-Bit Server VM)
+# Mac OS X 15.7.9 x86_64, 16 procesadores, memoria maxima de la JVM 6144 MB
+# semilla=2026, vueltas=5, calentamiento=1, deportes=40, ids=aleatorio
+# cada estudiante practica entre 1 y 3 deportes y le interesan entre 1 y 2
+estructura,operacion,n,d,ops_por_vuelta,vueltas,mediana_ns_por_op,minimo_ns_por_op,maximo_ns_por_op,teorica
+DLL,pushBack,1000,,1000,5,8.07,7.89,40.52,O(1)
+DLL,deleteNode,1000,,1000,5,9.41,9.37,13.52,O(1)
+DLL,find,1000,,50,5,1390.58,1355.64,1513.76,O(n)
+Queue,enqueue,1000,,1000,5,13.01,12.68,59.89,O(1)
+Queue,dequeue,1000,,1000,5,8.95,8.81,9.47,O(1)
+# n=1000: d=40 deportes, m=2014 parejas (estudiante, deporte que practica)
+SistemaDeportes,registrar,1000,40,1000,5,8760.52,5492.29,11626.44,O(log n)
+SistemaDeportes,buscar,1000,40,100000,5,78.10,66.68,78.38,O(log n)
+SistemaDeportes,eliminar,1000,40,100,5,7065.61,6527.70,7317.13,O(log n)
+# n=1000: 1 comunidades, la mayor con 1000 estudiantes
+SistemaDeportes,comunidades,1000,40,100,5,230423.24,221772.09,272166.72,O(n log n)
+SistemaDeportes,conexion_promedio,1000,40,200,5,827.07,820.31,948.91,-
+SistemaDeportes,conexion_peor_caso,1000,40,100,5,49311.66,48300.43,52388.38,O(n+m)
+SistemaDeportes,ranking,1000,40,5000,5,346.27,293.42,398.63,O(d)
+DLL,pushBack,10000,,10000,5,4.92,4.89,5.40,O(1)
+DLL,deleteNode,10000,,10000,5,7.08,6.95,7.33,O(1)
+DLL,find,10000,,50,5,12477.20,11849.64,16985.06,O(n)
+Queue,enqueue,10000,,10000,5,13.09,12.72,13.27,O(1)
+Queue,dequeue,10000,,10000,5,8.91,8.91,8.93,O(1)
+# n=10000: d=40 deportes, m=20100 parejas (estudiante, deporte que practica)
+SistemaDeportes,registrar,10000,40,10000,5,7387.35,6277.34,8170.31,O(log n)
+SistemaDeportes,buscar,10000,40,100000,5,101.11,98.25,116.34,O(log n)
+SistemaDeportes,eliminar,10000,40,1000,5,3665.69,3622.88,3775.74,O(log n)
+# n=10000: 1 comunidades, la mayor con 10000 estudiantes
+SistemaDeportes,comunidades,10000,40,10,5,3738223.00,3597698.20,4072935.10,O(n log n)
+SistemaDeportes,conexion_promedio,10000,40,200,5,1127.93,1106.25,1577.21,-
+SistemaDeportes,conexion_peor_caso,10000,40,10,5,640061.00,596445.60,665622.90,O(n+m)
+SistemaDeportes,ranking,10000,40,5000,5,278.95,274.22,348.28,O(d)
+DLL,pushBack,100000,,100000,5,4.90,4.70,5.32,O(1)
+DLL,deleteNode,100000,,100000,5,13.82,11.46,14.77,O(1)
+DLL,find,100000,,50,5,93111.56,91392.14,123627.72,O(n)
+Queue,enqueue,100000,,100000,5,9.11,8.71,9.55,O(1)
+Queue,dequeue,100000,,100000,5,8.29,7.77,8.45,O(1)
+# n=100000: d=40 deportes, m=200347 parejas (estudiante, deporte que practica)
+SistemaDeportes,registrar,100000,40,100000,5,8144.18,6127.26,8748.78,O(log n)
+SistemaDeportes,buscar,100000,40,100000,5,432.18,389.96,469.68,O(log n)
+SistemaDeportes,eliminar,100000,40,10000,5,5335.36,4204.95,9029.32,O(log n)
+# n=100000: 1 comunidades, la mayor con 100000 estudiantes
+SistemaDeportes,comunidades,100000,40,1,5,92835183.00,75867686.00,104513247.00,O(n log n)
+SistemaDeportes,conexion_promedio,100000,40,200,5,1067.93,1054.22,2326.09,-
+SistemaDeportes,conexion_peor_caso,100000,40,1,5,26973717.00,25288993.00,28007398.00,O(n+m)
+SistemaDeportes,ranking,100000,40,5000,5,293.66,287.88,308.51,O(d)
+DLL,pushBack,1000000,,1000000,5,49.86,5.60,63.29,O(1)
+DLL,deleteNode,1000000,,1000000,5,138.03,127.69,166.20,O(1)
+DLL,find,1000000,,50,5,1955511.94,1813400.28,2421882.84,O(n)
+Queue,enqueue,1000000,,1000000,5,14.39,12.65,17.86,O(1)
+Queue,dequeue,1000000,,1000000,5,7.72,7.60,7.97,O(1)
+# n=1000000: d=40 deportes, m=2001003 parejas (estudiante, deporte que practica)
+SistemaDeportes,registrar,1000000,40,1000000,5,7582.46,6727.01,8698.07,O(log n)
+SistemaDeportes,buscar,1000000,40,100000,5,826.29,781.48,841.92,O(log n)
+SistemaDeportes,eliminar,1000000,40,100000,5,5487.68,4713.47,8862.51,O(log n)
+# n=1000000: 1 comunidades, la mayor con 1000000 estudiantes
+SistemaDeportes,comunidades,1000000,40,1,5,1568576981.00,1517837239.00,1599963700.00,O(n log n)
+SistemaDeportes,conexion_promedio,1000000,40,200,5,1332.51,1269.41,2848.69,-
+SistemaDeportes,conexion_peor_caso,1000000,40,1,5,318528968.00,290291223.00,325596716.00,O(n+m)
+SistemaDeportes,ranking,1000000,40,5000,5,281.87,279.71,305.50,O(d)
