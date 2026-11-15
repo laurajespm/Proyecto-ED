@@ -129,7 +129,9 @@ Proyecto-ED/
 │       └── Analizador.java          mide los tiempos de cada operación
 └── test/
     ├── deportes/PruebasRF2RF7.java  pruebas de RF2 y RF7
-    └── pruebas/PruebasSistema.java  pruebas de las estructuras y de RF1 a RF7 (52 casos)
+    └── pruebas/
+        ├── PruebasSistema.java      pruebas de las estructuras y de RF1 a RF7 (52 casos)
+        └── PruebasGenerador.java    pruebas del generador de datos (misma semilla, mismos datos)
 ```
 
 Las estructuras de datos están implementadas desde cero; no se usan las colecciones de `java.util`. El código del sistema solo usa de Java el `Scanner` y la lectura de archivos del menú, y `java.text.Normalizer` para quitar las tildes. Las pruebas y el analizador usan `Random` para generar datos.
@@ -165,9 +167,10 @@ Con los datos de ejemplo, la opción 4 muestra tres comunidades (de 8, 3 y 3 est
 ```bash
 java -cp out pruebas.PruebasSistema
 java -cp out deportes.PruebasRF2RF7
+java -cp out pruebas.PruebasGenerador
 ```
 
-`PruebasSistema` imprime PASÓ o FALLÓ por cada caso y termina con código 1 si alguno falla. Incluye casos borde de la lista, la cola y el AVL (eliminar hojas, nodos con un hijo y con dos hijos, 20 000 operaciones al azar y la altura del AVL), cada requisito funcional y una prueba que compara 12 000 conexiones con un cálculo independiente de la distancia mínima. `PruebasRF2RF7` prueba RF2 y RF7 por separado.
+`PruebasSistema` imprime PASÓ o FALLÓ por cada caso y termina con código 1 si alguno falla. Incluye casos borde de la lista, la cola y el AVL (eliminar hojas, nodos con un hijo y con dos hijos, 20 000 operaciones al azar y la altura del AVL), cada requisito funcional y una prueba que compara 12 000 conexiones con un cálculo independiente de la distancia mínima. `PruebasRF2RF7` prueba RF2 y RF7 por separado. `PruebasGenerador` comprueba que `GeneradorDatos` da los mismos estudiantes con la misma semilla, que los IDs no se repiten y que ningún deporte sale dos veces en un mismo estudiante; sin eso las mediciones de dos corridas no se podrían comparar.
 
 ### Mediciones
 
