@@ -129,7 +129,9 @@ Proyecto-ED/
 │       └── Analizador.java          mide los tiempos de cada operación
 └── test/
     ├── deportes/PruebasRF2RF7.java  pruebas de RF2 y RF7
-    └── pruebas/PruebasSistema.java  pruebas de las estructuras y de RF1 a RF7 (52 casos)
+    └── pruebas/
+        ├── PruebasSistema.java      pruebas de las estructuras y de RF1 a RF7 (52 casos)
+        └── PruebasGenerador.java    pruebas del generador de datos (misma semilla, mismos datos)
 ```
 
 Las estructuras de datos están implementadas desde cero; no se usan las colecciones de `java.util`. El código del sistema solo usa de Java el `Scanner` y la lectura de archivos del menú, y `java.text.Normalizer` para quitar las tildes. Las pruebas y el analizador usan `Random` para generar datos.
@@ -165,9 +167,10 @@ Con los datos de ejemplo, la opción 4 muestra tres comunidades (de 8, 3 y 3 est
 ```bash
 java -cp out pruebas.PruebasSistema
 java -cp out deportes.PruebasRF2RF7
+java -cp out pruebas.PruebasGenerador
 ```
 
-`PruebasSistema` imprime PASÓ o FALLÓ por cada caso y termina con código 1 si alguno falla. Incluye casos borde de la lista, la cola y el AVL (eliminar hojas, nodos con un hijo y con dos hijos, 20 000 operaciones al azar y la altura del AVL), cada requisito funcional y una prueba que compara 12 000 conexiones con un cálculo independiente de la distancia mínima. `PruebasRF2RF7` prueba RF2 y RF7 por separado.
+`PruebasSistema` imprime PASÓ o FALLÓ por cada caso y termina con código 1 si alguno falla. Incluye casos borde de la lista, la cola y el AVL (eliminar hojas, nodos con un hijo y con dos hijos, 20 000 operaciones al azar y la altura del AVL), cada requisito funcional y una prueba que compara 12 000 conexiones con un cálculo independiente de la distancia mínima. `PruebasRF2RF7` prueba RF2 y RF7 por separado. `PruebasGenerador` comprueba que `GeneradorDatos` da los mismos estudiantes con la misma semilla, que los IDs no se repiten y que ningún deporte sale dos veces en un mismo estudiante; sin eso las mediciones de dos corridas no se podrían comparar.
 
 ### Mediciones
 
@@ -177,6 +180,8 @@ python3 resultados/graficar.py
 ```
 
 El analizador genera estudiantes al azar con semilla fija y mide cada operación con `System.nanoTime` para n = 1 000, 10 000, 100 000 y 1 000 000 (opciones al inicio de `Analizador.java`, por ejemplo `--tamanos=10000,100000 --vueltas=5`). Guarda `resultados/tiempos.csv`, y `graficar.py` dibuja una gráfica por estructura con la curva teórica ajustada, una tabla y las razones de crecimiento entre tamaños.
+
+`tiempos.csv` empieza con líneas que comienzan con `#`: la fecha, la versión de Java, el equipo, las opciones usadas y los datos de cada tamaño (cuántos deportes y cuántas comunidades salieron). Después viene una fila por operación y tamaño, con las columnas `estructura`, `operacion`, `n`, `d` (cantidad de deportes), `ops_por_vuelta` (operaciones que se miden en cada vuelta), `vueltas`, `mediana_ns_por_op`, `minimo_ns_por_op`, `maximo_ns_por_op` (todos en nanosegundos por operación) y `teorica` (el costo esperado). La tabla y las gráficas usan la mediana de las vueltas, y las barras de error van del mínimo al máximo; las vueltas de calentamiento no se guardan.
 
 ## Estado del proyecto
 
