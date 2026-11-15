@@ -127,9 +127,14 @@ Proyecto-ED/
 │   └── analisis/
 │       ├── GeneradorDatos.java      datos de prueba al azar con semilla
 │       └── Analizador.java          mide los tiempos de cada operación
+├── docs/
+│   └── manual_de_uso.md             cómo usar cada opción del menú
 └── test/
-    ├── deportes/PruebasRF2RF7.java  pruebas de RF2 y RF7
-    └── pruebas/PruebasSistema.java  pruebas de las estructuras y de RF1 a RF7 (52 casos)
+    ├── deportes/PruebasRF2RF7.java        pruebas de RF2 y RF7
+    └── pruebas/
+        ├── PruebasSistema.java            estructuras y RF1 a RF7 (52 casos)
+        ├── PruebasNormalizacion.java      nombres de deportes y orden del ranking
+        └── PruebasComunidades.java        formación, unión y separación de comunidades
 ```
 
 Las estructuras de datos están implementadas desde cero; no se usan las colecciones de `java.util`. El código del sistema solo usa de Java el `Scanner` y la lectura de archivos del menú, y `java.text.Normalizer` para quitar las tildes. Las pruebas y el analizador usan `Random` para generar datos.
@@ -156,7 +161,7 @@ javac -encoding UTF-8 -d out (Get-ChildItem -Recurse src,test -Filter *.java).Fu
 java -cp out app.Main datos/estudiantes.txt
 ```
 
-El archivo es opcional. Tiene una línea por estudiante con cuatro campos separados por punto y coma (`id;nombre;deportes que practica;deportes que le interesan`); los deportes de cada lista van separados por coma y cualquiera de las dos listas puede quedar vacía. Las líneas vacías y las que empiezan con `#` se ignoran. El archivo se lee en UTF-8.
+El [manual de uso](docs/manual_de_uso.md) explica cada opción del menú con ejemplos de lo que muestra. El archivo es opcional. Tiene una línea por estudiante con cuatro campos separados por punto y coma (`id;nombre;deportes que practica;deportes que le interesan`); los deportes de cada lista van separados por coma y cualquiera de las dos listas puede quedar vacía. Las líneas vacías y las que empiezan con `#` se ignoran. El archivo se lee en UTF-8.
 
 Con los datos de ejemplo, la opción 4 muestra tres comunidades (de 8, 3 y 3 estudiantes); la opción 5 con el ID 1001 muestra que Ana Torres llega a Marta Díaz, que practica natación, a través de Luis Peña; con 1012 sale una conexión directa y con 1004 se informa que no existe conexión.
 
@@ -164,10 +169,12 @@ Con los datos de ejemplo, la opción 4 muestra tres comunidades (de 8, 3 y 3 est
 
 ```bash
 java -cp out pruebas.PruebasSistema
+java -cp out pruebas.PruebasNormalizacion
+java -cp out pruebas.PruebasComunidades
 java -cp out deportes.PruebasRF2RF7
 ```
 
-`PruebasSistema` imprime PASÓ o FALLÓ por cada caso y termina con código 1 si alguno falla. Incluye casos borde de la lista, la cola y el AVL (eliminar hojas, nodos con un hijo y con dos hijos, 20 000 operaciones al azar y la altura del AVL), cada requisito funcional y una prueba que compara 12 000 conexiones con un cálculo independiente de la distancia mínima. `PruebasRF2RF7` prueba RF2 y RF7 por separado.
+`PruebasSistema` imprime PASÓ o FALLÓ por cada caso y termina con código 1 si alguno falla. Incluye casos borde de la lista, la cola y el AVL (eliminar hojas, nodos con un hijo y con dos hijos, 20 000 operaciones al azar y la altura del AVL), cada requisito funcional y una prueba que compara 12 000 conexiones con un cálculo independiente de la distancia mínima. `PruebasNormalizacion` comprueba que un deporte escrito de formas distintas (con o sin tildes, mayúsculas o espacios de más) se reconozca como uno solo y el orden del ranking. `PruebasComunidades` comprueba cuándo se forma una comunidad, cómo se unen dos grupos al registrar a alguien que comparte deporte con ambos y cómo se separan al eliminarlo. `PruebasRF2RF7` prueba RF2 y RF7 por separado.
 
 ### Mediciones
 
