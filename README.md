@@ -181,6 +181,8 @@ python3 resultados/graficar.py
 
 El analizador genera estudiantes al azar con semilla fija y mide cada operación con `System.nanoTime` para n = 1 000, 10 000, 100 000 y 1 000 000 (opciones al inicio de `Analizador.java`, por ejemplo `--tamanos=10000,100000 --vueltas=5`). Guarda `resultados/tiempos.csv`, y `graficar.py` dibuja una gráfica por estructura con la curva teórica ajustada, una tabla y las razones de crecimiento entre tamaños.
 
+`tiempos.csv` empieza con líneas que comienzan con `#`: la fecha, la versión de Java, el equipo, las opciones usadas y los datos de cada tamaño (cuántos deportes y cuántas comunidades salieron). Después viene una fila por operación y tamaño, con las columnas `estructura`, `operacion`, `n`, `d` (cantidad de deportes), `ops_por_vuelta` (operaciones que se miden en cada vuelta), `vueltas`, `mediana_ns_por_op`, `minimo_ns_por_op`, `maximo_ns_por_op` (todos en nanosegundos por operación) y `teorica` (el costo esperado). La tabla y las gráficas usan la mediana de las vueltas, y las barras de error van del mínimo al máximo; las vueltas de calentamiento no se guardan.
+
 ## Estado del proyecto
 
 - **Entrega 1:** reporte con comprensión del problema, MVP, estructuras elegidas y flujo general, más las estructuras base y las plantillas del código.
